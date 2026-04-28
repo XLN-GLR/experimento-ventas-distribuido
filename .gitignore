@@ -1,0 +1,32 @@
+# Archivos de entorno (Credenciales, tokens, contraseñas)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+supabase/.env
+
+# Archivos de configuración local
+config.json
+secret.key
+config.local.js
+
+# Archivos temporales y del sistema
+.DS_Store
+Thumbs.db
+*.log
+logs/
+tmp/
+temp/
+
+# Herramientas de desarrollo / Entornos virtuales
+.idea/
+.vscode/
+node_modules/
+venv/
+.venv/
+env/
+
+# Cobertura de pruebas
+coverage/
+.nyc_output/

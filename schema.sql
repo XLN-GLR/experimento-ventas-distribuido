@@ -1,0 +1,23 @@
+-- Definición de la tabla productos en Supabase (PostgreSQL)
+
+CREATE TABLE IF NOT EXISTS public.productos (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+    precio NUMERIC(10, 2) NOT NULL CHECK (precio >= 0),
+    stock INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
+    activo BOOLEAN NOT NULL DEFAULT true,
+    creado_en TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    actualizado_en TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Índices para optimizar las búsquedas más comunes
+CREATE INDEX IF NOT EXISTS idx_productos_nombre ON public.productos (nombre);
+CREATE INDEX IF NOT EXISTS idx_productos_activo ON public.productos (activo);
+
+-- Comentarios descriptivos para documentar la base de datos
+COMMENT ON TABLE public.productos IS 'Tabla principal para almacenar la información de los productos.';
+COMMENT ON COLUMN public.productos.id IS 'Identificador único del producto.';
+COMMENT ON COLUMN public.productos.nombre IS 'Nombre visible del producto.';
+COMMENT ON COLUMN public.productos.precio IS 'Precio unitario del producto en la moneda local.';
+COMMENT ON COLUMN public.productos.stock IS 'Cantidad de unidades disponibles en el inventario.';
