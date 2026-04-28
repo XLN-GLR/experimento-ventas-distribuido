@@ -1,15 +1,20 @@
-// Configuración de Supabase centralizada
-const CONFIG = {
-    SUPABASE_URL: 'TU_SUPABASE_URL_AQUI',
-    SUPABASE_ANON_KEY: 'TU_SUPABASE_API_KEY_AQUI'
-};
+// Obtener credenciales desde un objeto global CONFIG (provisto por config.js) o variables de entorno
+const SUPABASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.SUPABASE_URL) || (window.ENV && window.ENV.SUPABASE_URL) || '';
+const SUPABASE_ANON_KEY = (typeof CONFIG !== 'undefined' && CONFIG.SUPABASE_ANON_KEY) || (window.ENV && window.ENV.SUPABASE_ANON_KEY) || '';
+
+let supabase = null;
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL.includes('TU_SUPABASE_URL')) {
+    console.error('⚠️ [Error Crítico]: Las credenciales de Supabase no están definidas o son las predeterminadas.');
+    console.error('Por favor, crea un archivo config.js (basado en config.example.js), configúralo con tus llaves y asegúrate de importarlo en index.html antes de app.js.');
+} else {
+    // Inicializamos el cliente de Supabase usando el script global cargado vía CDN
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
 
 // Estado global de la aplicación
 let currentProducts = [];
 let editingProductId = null;
-
-// Inicializamos el cliente de Supabase usando el script global cargado vía CDN
-const supabase = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 
 /**
  * Función para verificar el estado de la sesión
@@ -283,6 +288,18 @@ async function send_product_to_cloud(event) {
 
 // Ejecutar la carga de productos y asociar eventos una vez que el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
+    if (!supabase) {
+        document.body.innerHTML = `
+            <div class="container">
+                <div class="error" style="margin-top: 3rem; text-align: center;">
+                    <h2 style="margin-top:0;">⚠️ Error de Configuración</h2>
+                    <p>Las credenciales de Supabase no están configuradas correctamente o falta el archivo <strong>config.js</strong>.</p>
+                    <small>Crea el archivo config.js basándote en config.example.js, agrega tus credenciales y verifica la consola del navegador.</small>
+                </div>
+            </div>`;
+        return; // Detenemos la inicialización de la app
+    }
+
     // Revisar si hay sesión activa
     check_active_session();
     
