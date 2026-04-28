@@ -1,0 +1,12 @@
+DOCUMENTACIÓN DE ACCESO Y ROLES DE USUARIO
+==========================================
+
+El sistema actual utiliza un esquema de acceso único para administradores, fundamentado en la seguridad y agilidad que provee el uso de tokens JWT (JSON Web Tokens).
+
+Detalles del Esquema de Acceso:
+-------------------------------
+1. **Rol Único (Administrador)**: Por simplicidad y enfoque en el desarrollo del MVP (Minimum Viable Product) / Proyecto de Grado, no se han creado jerarquías de usuarios. Todo usuario validado asume el rol de administrador del inventario.
+2. **Validación vía JWT**: El sistema delega la autenticación a Supabase Auth. Al iniciar sesión, el usuario recibe un JWT firmado criptográficamente.
+3. **Flujo de Peticiones**: Cada vez que el frontend intenta modificar la tabla `productos` (operaciones de escritura), adjunta este JWT. Supabase extrae el rol contenido en el token (típicamente `authenticated`) y, si coincide con las políticas RLS de PostgreSQL, permite la transacción de manera instantánea y segura.
+
+Este esquema previene la creación de complejas tablas relacionales de permisos en etapas tempranas, delegando la carga y validación directamente a las capas nativas del proveedor en la nube.

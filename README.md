@@ -49,7 +49,7 @@ A continuación, se documentan los endpoints automáticos disponibles para la ta
 
 Para el contexto de este proyecto de grado, la seguridad de los datos y la integridad de la información son aspectos de suma importancia. Por esta razón, se han aplicado restricciones estrictas sobre la API y la base de datos a través de Políticas de Seguridad a Nivel de Fila (RLS) en Supabase. 
 
-Actualmente, **todas las operaciones de escritura (creación, actualización y eliminación de registros)** están restringidas exclusivamente a usuarios que hayan iniciado sesión y cuenten con el rol `authenticated`. Esto previene cualquier manipulación pública o no autorizada del inventario y garantiza la fiabilidad del sistema en un entorno real.
+Actualmente, **todas las operaciones de escritura (creación, actualización y eliminación de registros)** están restringidas exclusivamente a usuarios que hayan iniciado sesión y cuenten con el rol `authenticated`. Esto previene cualquier manipulación pública o no autorizada del inventario y garantiza la fiabilidad del sistema en un entorno real. De esta forma, el backend está completamente blindado y solo responde a peticiones de usuarios registrados y confirmados.
 
 ## Solución de Problemas Comunes (Troubleshooting)
 

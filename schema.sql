@@ -26,6 +26,8 @@ COMMENT ON COLUMN public.productos.stock IS 'Cantidad de unidades disponibles en
 -- POLÍTICAS DE SEGURIDAD A NIVEL DE FILA (RLS)
 -- ==========================================
 -- Se habilita RLS para proteger la tabla contra accesos no autorizados.
+-- NOTA TÉCNICA: La tabla productos tiene el Row Level Security (RLS) configurado estrictamente 
+-- para requerir el rol 'authenticated' en todas las operaciones de escritura (INSERT, UPDATE, DELETE).
 ALTER TABLE public.productos ENABLE ROW LEVEL SECURITY;
 
 -- 1. Política de Lectura (SELECT)
