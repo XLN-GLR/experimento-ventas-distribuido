@@ -22,15 +22,30 @@ COMMENT ON COLUMN public.productos.nombre IS 'Nombre visible del producto.';
 COMMENT ON COLUMN public.productos.precio IS 'Precio unitario del producto en la moneda local.';
 COMMENT ON COLUMN public.productos.stock IS 'Cantidad de unidades disponibles en el inventario.';
 
--- Políticas de Seguridad a Nivel de Fila (RLS)
+-- ==========================================
+-- POLÍTICAS DE SEGURIDAD A NIVEL DE FILA (RLS)
+-- ==========================================
+-- Se habilita RLS para proteger la tabla contra accesos no autorizados.
 ALTER TABLE public.productos ENABLE ROW LEVEL SECURITY;
 
+-- 1. Política de Lectura (SELECT)
+-- Permite que cualquier usuario (incluso no autenticado) pueda ver el catálogo de productos.
+CREATE POLICY "Permitir lectura pública"
+ON public.productos
+FOR SELECT
+TO anon, authenticated
+USING (true);
+
+-- 2. Política de Creación (INSERT)
+-- Restringe la creación de nuevos productos únicamente a usuarios con sesión iniciada.
 CREATE POLICY "Permitir inserciones a autenticados"
 ON public.productos
 FOR INSERT
 TO authenticated
 WITH CHECK (true);
 
+-- 3. Política de Actualización (UPDATE)
+-- Restringe la modificación de productos existentes únicamente a usuarios con sesión iniciada.
 CREATE POLICY "Permitir actualizaciones a autenticados"
 ON public.productos
 FOR UPDATE
@@ -38,6 +53,8 @@ TO authenticated
 USING (true)
 WITH CHECK (true);
 
+-- 4. Política de Eliminación (DELETE)
+-- Restringe el borrado de productos únicamente a usuarios con sesión iniciada.
 CREATE POLICY "Permitir eliminaciones a autenticados"
 ON public.productos
 FOR DELETE

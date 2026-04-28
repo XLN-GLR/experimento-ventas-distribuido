@@ -50,3 +50,14 @@ A continuación, se documentan los endpoints automáticos disponibles para la ta
 Para el contexto de este proyecto de grado, la seguridad de los datos y la integridad de la información son aspectos de suma importancia. Por esta razón, se han aplicado restricciones estrictas sobre la API y la base de datos a través de Políticas de Seguridad a Nivel de Fila (RLS) en Supabase. 
 
 Actualmente, **todas las operaciones de escritura (creación, actualización y eliminación de registros)** están restringidas exclusivamente a usuarios que hayan iniciado sesión y cuenten con el rol `authenticated`. Esto previene cualquier manipulación pública o no autorizada del inventario y garantiza la fiabilidad del sistema en un entorno real.
+
+## Solución de Problemas Comunes (Troubleshooting)
+
+### Conexión a Supabase
+*   **Error 401 Unauthorized / JWT Expired:** Ocurre cuando el token de autenticación del usuario ha caducado. **Solución:** El usuario debe volver a iniciar sesión o el frontend debe implementar la renovación automática de tokens (`refresh token`).
+*   **Error 403 Forbidden o filas vacías:** Indica un problema con las políticas RLS. **Solución:** Verifica que la política correspondiente (SELECT, INSERT, UPDATE o DELETE) esté activa y que el rol del usuario que realiza la petición coincida con el permitido (por ejemplo, `anon` vs `authenticated`).
+*   **Failed to fetch (CORS o Red):** Asegúrate de que las variables de entorno (`URL` y `ANON_KEY`) estén configuradas correctamente tanto en tu archivo `.env` local como en la plataforma de producción.
+
+### Sincronización en GitHub
+*   **Updates were rejected (non-fast-forward):** Este error de Git ocurre cuando intentas hacer `push` a una rama remota que tiene modificaciones que tú no tienes en local. **Solución:** Ejecuta `git pull origin main` (o el nombre de tu rama) primero, resuelve cualquier conflicto si existe, y luego intenta hacer el `push` nuevamente.
+*   **Credenciales no válidas:** Si no te permite subir cambios, verifica que estés usando un *Personal Access Token (PAT)* vigente de GitHub en lugar de tu contraseña habitual, o que tu clave SSH esté correctamente vinculada a tu cuenta.

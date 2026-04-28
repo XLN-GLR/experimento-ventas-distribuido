@@ -1,0 +1,32 @@
+INFORME DE CIERRE TÉCNICO
+=========================
+Módulo de Persistencia y Base de Datos (Proyecto de Grado)
+
+1. Resumen Ejecutivo
+--------------------
+Este informe documenta la culminación de la fase de diseño e implementación del módulo de backend y persistencia en la nube. El sistema ha sido configurado exitosamente para ofrecer alta disponibilidad, seguridad estricta y APIs dinámicas para agilizar el desarrollo del frontend.
+
+2. Arquitectura del Sistema
+---------------------------
+El módulo se ha diseñado bajo una arquitectura "Backend-as-a-Service" (BaaS). Esto permite delegar la gestión del servidor, el mantenimiento de la infraestructura y la escalabilidad, interactuando con la base de datos a través de una API RESTful.
+
+- Motor de Base de Datos: PostgreSQL.
+- Acceso a Datos: Endpoints RESTful generados automáticamente mediante PostgREST.
+- Autenticación y Autorización: Basada en JWT (JSON Web Tokens) generados en el inicio de sesión y verificados de manera nativa a nivel del motor de base de datos.
+- Modelo de Datos: Se implementó un esquema estricto de tablas (UUIDs, restricciones CHECK de valores no negativos, valores booleanos por defecto y marcas temporales) para prevenir inconsistencias.
+
+3. Servicios en la Nube Utilizados
+----------------------------------
+- Supabase: Actúa como el proveedor principal de infraestructura de backend (Database PostgreSQL, servicio de Identity/Auth y APIs PostgREST).
+- Git/GitHub: Sistema centralizado para el control de versiones, revisión de cambios y colaboración del código fuente.
+- Proveedor de Hosting Web (Vercel, Netlify, Render): Recomendado para la fase de producción, alojando el código cliente de forma serverless e inyectando las claves de entorno necesarias para enlazar la vista con la base de datos en la nube.
+
+4. Modelo de Seguridad (Row Level Security - RLS)
+-------------------------------------------------
+Se adoptó un modelo de seguridad estricto implementando Políticas a Nivel de Fila (RLS) directo en la base de datos. 
+- Las lecturas de catálogo (SELECT) han sido declaradas como de acceso público, ideal para mostrar los productos disponibles.
+- Sin embargo, cualquier operación de mutación de datos (INSERT, UPDATE, DELETE) exige rigurosamente que el token JWT adjunto provenga de un usuario válido y con el rol `authenticated`.
+
+5. Conclusión
+-------------
+El módulo backend se encuentra completamente desplegable, bien documentado y cumple a cabalidad con los requerimientos técnicos y estándares de seguridad exigidos para un proyecto de grado moderno. La capa de abstracción lograda permite a los desarrolladores de frontend enfocarse puramente en la interfaz de usuario.

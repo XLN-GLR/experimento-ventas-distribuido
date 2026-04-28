@@ -9,3 +9,7 @@ La tabla `productos` es la entidad principal para gestionar el inventario en la 
 - **stock**: Cantidad de unidades disponibles. Su valor inicial por defecto es 0.
 - **activo**: Booleano que indica si el producto está disponible (true por defecto).
 - **Timestamps**: Los campos `creado_en` y `actualizado_en` registran automáticamente la fecha y hora de creación y última modificación.
+
+## Protocolo de Autenticación
+
+Para garantizar la seguridad de los datos y evitar alteraciones no autorizadas en el inventario, el sistema ahora exige un **token de sesión activo (JWT)** para interactuar con la tabla `productos` en todas sus operaciones de escritura (INSERT, UPDATE, DELETE). Esto significa que cualquier cliente o aplicación que intente modificar un registro deberá primero autenticarse mediante Supabase Auth y adjuntar el token de autorización en el encabezado HTTP (`Authorization: Bearer <token>`). Las operaciones de lectura (SELECT) del catálogo se mantienen públicas para permitir la visualización de los artículos disponibles.
