@@ -34,27 +34,29 @@ function showNotification(mensaje, tipo = 'error') {
 }
 
 /**
- * Función para verificar el estado de la sesión
+ * Función para verificar el estado de la sesión usando getUser
  */
-async function check_active_session() {
+async function handle_session_state() {
     try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) throw error;
+        const { data: { user }, error } = await supabase.auth.getUser();
         
         const authPanel = document.getElementById('auth-panel');
         const appPanel = document.getElementById('app-panel');
 
-        if (session) {
-            authPanel.classList.add('hidden');
-            appPanel.classList.remove('hidden');
+        if (user) {
+            authPanel.style.display = 'none';
+            appPanel.style.display = 'block';
             cargarProductos();
         } else {
-            authPanel.classList.remove('hidden');
-            appPanel.classList.add('hidden');
+            authPanel.style.display = 'block';
+            appPanel.style.display = 'none';
         }
     } catch (error) {
         console.error('Error verificando sesión:', error.message);
-        showNotification('No pudimos verificar tu sesión. La base de datos no responde.', 'error');
+        const authPanel = document.getElementById('auth-panel');
+        const appPanel = document.getElementById('app-panel');
+        authPanel.style.display = 'block';
+        appPanel.style.display = 'none';
     }
 }
 
@@ -81,7 +83,12 @@ async function validate_user_access(event) {
         if (error) throw error;
         
         event.target.reset();
-        await check_active_session();
+        
+        // Manipulación explícita de estilos en línea tras éxito de inicio de sesión
+        document.getElementById('auth-panel').style.display = 'none';
+        document.getElementById('app-panel').style.display = 'block';
+        
+        await handle_session_state();
     } catch (error) {
         console.error('Error al iniciar sesión:', error.message);
         showNotification('Credenciales incorrectas o la base de datos no responde.', 'error');
@@ -103,7 +110,7 @@ async function execute_user_logout() {
         editingProductId = null;
         document.getElementById('productos-contenedor').innerHTML = '<div class="cargando">Cargando productos...</div>';
         
-        await check_active_session();
+        await handle_session_state();
     } catch (error) {
         console.error('Error al cerrar sesión:', error.message);
         showNotification('Ocurrió un error al intentar cerrar la sesión. La base de datos no responde.', 'error');
@@ -276,11 +283,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return; 
     }
 
-    check_active_session();
+    handle_session_state();
     
     supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-            check_active_session();
+            handle_session_state();
         }
     });
     
