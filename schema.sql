@@ -73,3 +73,8 @@ USING (true);
 -- USING (usuario_creador_id = auth.uid())
 -- 
 -- Actualmente usamos USING (true) dado que el esquema actual define un acceso único de administrador global.
+-- 
+-- ==========================================
+-- [ESTADO DE IMPLEMENTACIÓN]
+-- La autenticación ha sido activada y verificada exitosamente para el acceso administrativo. 
+-- El sistema se encuentra protegido contra escrituras anónimas.
