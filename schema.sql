@@ -25,21 +25,21 @@ COMMENT ON COLUMN public.productos.stock IS 'Cantidad de unidades disponibles en
 -- Políticas de Seguridad a Nivel de Fila (RLS)
 ALTER TABLE public.productos ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Permitir inserciones a anon"
+CREATE POLICY "Permitir inserciones a autenticados"
 ON public.productos
 FOR INSERT
-TO anon
+TO authenticated
 WITH CHECK (true);
 
-CREATE POLICY "Permitir actualizaciones a anon"
+CREATE POLICY "Permitir actualizaciones a autenticados"
 ON public.productos
 FOR UPDATE
-TO anon
+TO authenticated
 USING (true)
 WITH CHECK (true);
 
-CREATE POLICY "Permitir eliminaciones a anon"
+CREATE POLICY "Permitir eliminaciones a autenticados"
 ON public.productos
 FOR DELETE
-TO anon
+TO authenticated
 USING (true);

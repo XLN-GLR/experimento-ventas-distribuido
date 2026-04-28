@@ -1,0 +1,28 @@
+# Flujo de Autenticación - Proyecto de Grado (Supabase Identity)
+
+Este documento describe el flujo de registro e inicio de sesión propuesto utilizando el servicio integrado de autenticación de Supabase (Supabase Auth). Este flujo es indispensable ahora que la base de datos requiere usuarios autenticados para operaciones de escritura.
+
+## 1. Registro de Nuevos Usuarios (Sign Up)
+El usuario proporciona un correo electrónico y una contraseña a través del frontend.
+1. **Petición del cliente**: El frontend llama al método `supabase.auth.signUp()`.
+2. **Creación en Supabase**: Supabase registra al usuario en su tabla interna `auth.users`.
+3. **Verificación de Email (Opcional pero recomendado)**: Se envía un correo electrónico automático al usuario con un enlace de confirmación.
+4. **Respuesta**: El frontend recibe el objeto del usuario o un mensaje indicando que se debe revisar la bandeja de entrada.
+
+## 2. Inicio de Sesión (Sign In)
+El usuario accede a su cuenta proporcionando sus credenciales.
+1. **Petición del cliente**: El frontend llama al método `supabase.auth.signInWithPassword()`.
+2. **Validación**: Supabase valida las credenciales contra `auth.users`.
+3. **Generación de JWT**: Si las credenciales son correctas, Supabase genera un token JWT (JSON Web Token) firmado digitalmente que incluye el rol `authenticated`.
+4. **Almacenamiento del Token**: El frontend (normalmente a través de la librería cliente de Supabase) guarda automáticamente este token en el almacenamiento local del navegador (Local Storage) o en cookies seguras.
+
+## 3. Peticiones Autenticadas a la Base de Datos (Autorización RLS)
+Una vez que el usuario ha iniciado sesión, el cliente web adjunta el token JWT en cada petición a la base de datos.
+1. **Envío del Token**: Las operaciones a la tabla `productos` (INSERT, UPDATE, DELETE) incluirán el header `Authorization: Bearer <TOKEN_JWT>`.
+2. **Evaluación de Políticas RLS**: Supabase extrae el rol y el ID del usuario desde el JWT y lo compara con las Políticas de Seguridad a Nivel de Fila (RLS) configuradas en PostgreSQL.
+3. **Aprobación o Rechazo**: Como nuestras políticas exigen el rol `authenticated`, si el token es válido, la transacción se ejecuta. Si falta el token o expiró (rol `anon`), PostgreSQL rechazará la petición automáticamente.
+
+## 4. Cierre de Sesión (Sign Out)
+1. **Petición del cliente**: El frontend llama a `supabase.auth.signOut()`.
+2. **Limpieza**: La librería cliente de Supabase elimina el token del almacenamiento local.
+3. **Resultado**: Las futuras peticiones a la API volverán a realizarse bajo el rol `anon`, bloqueando inmediatamente los permisos de escritura del usuario.

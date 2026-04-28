@@ -36,3 +36,9 @@ A continuación, se documentan los endpoints automáticos disponibles para la ta
 
 *   `schema.sql`: Definición técnica de la tabla `productos` con sus respectivos tipos de datos y restricciones de integridad.
 *   `.gitignore`: Listado de archivos excluidos del repositorio para evitar la filtración de credenciales u otros datos sensibles.
+
+## Seguridad de los Datos (Proyecto de Grado)
+
+Para el contexto de este proyecto de grado, la seguridad de los datos y la integridad de la información son aspectos de suma importancia. Por esta razón, se han aplicado restricciones estrictas sobre la API y la base de datos a través de Políticas de Seguridad a Nivel de Fila (RLS) en Supabase. 
+
+Actualmente, **todas las operaciones de escritura (creación, actualización y eliminación de registros)** están restringidas exclusivamente a usuarios que hayan iniciado sesión y cuenten con el rol `authenticated`. Esto previene cualquier manipulación pública o no autorizada del inventario y garantiza la fiabilidad del sistema en un entorno real.
