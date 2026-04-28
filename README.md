@@ -1,5 +1,13 @@
 # Módulo de Persistencia de Datos en la Nube
 
+## Estado del Despliegue
+
+- **Entorno:** Producción
+- **URL Pública de la Aplicación:** `[Pendiente de asignar tras el despliegue]`
+- **Estado de la Base de Datos:** Activa (Supabase)
+
+---
+
 Este repositorio contiene la configuración y esquemas iniciales para el módulo que gestiona la persistencia de datos en la nube de nuestra aplicación, apoyándose en **Supabase**.
 
 ## Propósito del Módulo
