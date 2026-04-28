@@ -12,6 +12,86 @@ let editingProductId = null;
 const supabase = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 
 /**
+ * Función para verificar el estado de la sesión
+ */
+async function check_active_session() {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    
+    const authPanel = document.getElementById('auth-panel');
+    const appPanel = document.getElementById('app-panel');
+
+    if (session) {
+        // Usuario autenticado
+        authPanel.classList.add('hidden');
+        appPanel.classList.remove('hidden');
+        
+        // Cargar datos si no se han cargado
+        cargarProductos();
+    } else {
+        // Usuario no autenticado
+        authPanel.classList.remove('hidden');
+        appPanel.classList.add('hidden');
+    }
+}
+
+/**
+ * Función asíncrona para iniciar sesión
+ */
+async function execute_user_login(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('user_email').value;
+    const password = document.getElementById('user_password').value;
+    const btnSubmit = event.target.querySelector('.btn-submit');
+    const textoOriginal = btnSubmit.textContent;
+    
+    btnSubmit.textContent = 'Iniciando sesión...';
+    btnSubmit.disabled = true;
+
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) throw error;
+        
+        // Limpiar el formulario de login
+        event.target.reset();
+        
+        // Chequear sesión para mostrar el panel
+        await check_active_session();
+    } catch (error) {
+        console.error('Error al iniciar sesión:', error.message);
+        alert(`Error de autenticación: ${error.message}`);
+    } finally {
+        btnSubmit.textContent = textoOriginal;
+        btnSubmit.disabled = false;
+    }
+}
+
+/**
+ * Función asíncrona para cerrar sesión
+ */
+async function execute_user_logout() {
+    try {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+        
+        // Limpiar estado
+        currentProducts = [];
+        editingProductId = null;
+        document.getElementById('productos-contenedor').innerHTML = '<div class="cargando">Cargando productos...</div>';
+        
+        // Chequear sesión para mostrar el login
+        await check_active_session();
+    } catch (error) {
+        console.error('Error al cerrar sesión:', error.message);
+        alert(`Error: ${error.message}`);
+    }
+}
+
+/**
  * Función asíncrona para hacer un SELECT a la tabla "productos"
  * y renderizar los resultados en el DOM.
  */
@@ -112,8 +192,8 @@ function prepare_edit_mode(id) {
     document.getElementById('product_stock_input').value = producto.stock || '';
 
     // Actualizar UI del formulario
-    document.querySelector('.minimal-form h2').textContent = 'Editar Producto';
-    document.querySelector('.btn-submit').textContent = 'Actualizar Producto';
+    document.querySelector('#add-product-form h2').textContent = 'Editar Producto';
+    document.querySelector('#add-product-form .btn-submit').textContent = 'Actualizar Producto';
 
     // Opcional: enfocar el primer input y subir
     document.getElementById('product_name_input').focus();
@@ -188,7 +268,7 @@ async function send_product_to_cloud(event) {
         editingProductId = null;
         
         // Restaurar UI
-        document.querySelector('.minimal-form h2').textContent = 'Añadir Nuevo Producto';
+        document.querySelector('#add-product-form h2').textContent = 'Añadir Nuevo Producto';
         
         // Refrescamos la lista para ver los cambios
         await cargarProductos();
@@ -203,10 +283,31 @@ async function send_product_to_cloud(event) {
 
 // Ejecutar la carga de productos y asociar eventos una vez que el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-    cargarProductos();
+    // Revisar si hay sesión activa
+    check_active_session();
     
-    const form = document.getElementById('add-product-form');
-    if (form) {
-        form.addEventListener('submit', send_product_to_cloud);
+    // Escuchar cambios de estado en la autenticación (ej. expiración de token o logout de otra pestaña)
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+            check_active_session();
+        }
+    });
+    
+    // Conectar formulario de añadir/editar producto
+    const formProducto = document.getElementById('add-product-form');
+    if (formProducto) {
+        formProducto.addEventListener('submit', send_product_to_cloud);
+    }
+    
+    // Conectar formulario de inicio de sesión
+    const formLogin = document.getElementById('login-form');
+    if (formLogin) {
+        formLogin.addEventListener('submit', execute_user_login);
+    }
+    
+    // Conectar botón de cerrar sesión
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', execute_user_logout);
     }
 });

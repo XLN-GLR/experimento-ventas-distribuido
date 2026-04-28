@@ -262,3 +262,33 @@ header p {
 .minimal-form .btn-submit:hover {
     background-color: var(--primary-hover);
 }
+
+/* Utilidades para Autenticación y Visibilidad */
+.hidden {
+    display: none !important;
+}
+
+.user-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.btn-logout {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background-color: #f8fafc;
+    color: var(--text-color);
+    border-color: #cbd5e1;
+}
