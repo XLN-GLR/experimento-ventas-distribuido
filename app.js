@@ -81,5 +81,53 @@ function renderizarProductos(productos) {
     contenedor.appendChild(lista);
 }
 
-// Ejecutar la carga de productos una vez que el DOM esté listo
-document.addEventListener('DOMContentLoaded', cargarProductos);
+/**
+ * Función asíncrona que inserta un producto en Supabase al enviar el formulario
+ */
+async function send_product_to_cloud(event) {
+    event.preventDefault(); // Evita recargar la página
+
+    // Capturar los valores
+    const nombre = document.getElementById('product_name_input').value;
+    const precio = parseFloat(document.getElementById('product_price_input').value);
+    const stock = parseInt(document.getElementById('product_stock_input').value, 10);
+
+    const btnSubmit = event.target.querySelector('.btn-submit');
+    const textoOriginal = btnSubmit.textContent;
+    btnSubmit.textContent = 'Guardando...';
+    btnSubmit.disabled = true;
+
+    try {
+        const { error } = await supabase
+            .from('productos')
+            .insert([
+                { nombre, precio, stock }
+            ]);
+
+        if (error) {
+            throw error;
+        }
+
+        // Limpiamos el formulario tras éxito
+        event.target.reset();
+
+        // Refrescamos la lista para ver el nuevo producto
+        await cargarProductos();
+    } catch (error) {
+        console.error('Error al insertar el producto:', error.message);
+        alert(`Error al guardar: ${error.message}`);
+    } finally {
+        btnSubmit.textContent = textoOriginal;
+        btnSubmit.disabled = false;
+    }
+}
+
+// Ejecutar la carga de productos y asociar eventos una vez que el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    cargarProductos();
+    
+    const form = document.getElementById('add-product-form');
+    if (form) {
+        form.addEventListener('submit', send_product_to_cloud);
+    }
+});

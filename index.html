@@ -15,6 +15,27 @@
             <p>Descubre nuestra colección exclusiva</p>
         </header>
 
+        <section class="form-section">
+            <form id="add-product-form" class="minimal-form">
+                <h2>Añadir Nuevo Producto</h2>
+                <div class="form-group">
+                    <label for="product_name_input">Nombre del producto</label>
+                    <input type="text" id="product_name_input" required placeholder="Ej. Camiseta Minimalista">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product_price_input">Precio</label>
+                        <input type="number" id="product_price_input" step="0.01" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="product_stock_input">Stock</label>
+                        <input type="number" id="product_stock_input" required placeholder="0">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Guardar Producto</button>
+            </form>
+        </section>
+
         <main id="productos-contenedor">
             <div class="cargando">Cargando productos...</div>
         </main>
