@@ -61,7 +61,7 @@ async function check_active_session() {
 /**
  * Función asíncrona para iniciar sesión
  */
-async function iniciarSesion(event) {
+async function validate_user_access(event) {
     event.preventDefault();
     
     const email = document.getElementById('user-email').value;
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (formProducto) formProducto.addEventListener('submit', send_product_to_cloud);
     
     const formLogin = document.getElementById('login-form');
-    if (formLogin) formLogin.addEventListener('submit', iniciarSesion);
+    if (formLogin) formLogin.addEventListener('submit', validate_user_access);
     
     const btnLogout = document.getElementById('btn-logout');
     if (btnLogout) btnLogout.addEventListener('click', execute_user_logout);
