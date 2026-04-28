@@ -30,3 +30,16 @@ ON public.productos
 FOR INSERT
 TO anon
 WITH CHECK (true);
+
+CREATE POLICY "Permitir actualizaciones a anon"
+ON public.productos
+FOR UPDATE
+TO anon
+USING (true)
+WITH CHECK (true);
+
+CREATE POLICY "Permitir eliminaciones a anon"
+ON public.productos
+FOR DELETE
+TO anon
+USING (true);

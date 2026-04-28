@@ -1,0 +1,58 @@
+# Operaciones Permitidas - API de Productos (Supabase/PostgREST)
+
+Este documento detalla las operaciones disponibles a través de los endpoints generados automáticamente para la tabla `productos` y los parámetros/cuerpos requeridos para cada uno.
+
+## 1. Listar Productos (Read - All)
+- **Método**: GET
+- **Endpoint**: `/rest/v1/productos`
+- **Headers Requeridos**:
+  - `apikey`: <anon_key>
+  - `Authorization`: Bearer <anon_key>
+- **Parámetros Opcionales (Query Strings)**:
+  - `select=columna1,columna2` (Proyección de campos)
+  - `precio=gte.10` (Filtrado: mayor o igual a 10)
+  - `order=creado_en.desc` (Ordenamiento)
+  - `limit=10&offset=0` (Paginación)
+
+## 2. Obtener un Producto (Read - Single)
+- **Método**: GET
+- **Endpoint**: `/rest/v1/productos?id=eq.{id_producto}`
+- **Headers Requeridos**: Mismos que listar.
+- **Parámetros Requeridos**:
+  - `id=eq.{id}` en la URL para especificar el producto a consultar.
+
+## 3. Crear Producto (Create)
+- **Método**: POST
+- **Endpoint**: `/rest/v1/productos`
+- **Headers Requeridos**: Mismos que listar, más `Content-Type: application/json` y opcionalmente `Prefer: return=representation` para obtener el objeto creado.
+- **Cuerpo (JSON) Requerido**:
+  ```json
+  {
+    "nombre": "String (Requerido)",
+    "precio": "Number (Requerido, mayor a 0)",
+    "descripcion": "String (Opcional)",
+    "stock": "Number (Opcional, por defecto 0)",
+    "activo": "Boolean (Opcional, por defecto true)"
+  }
+  ```
+
+## 4. Actualizar Producto (Update)
+- **Método**: PATCH
+- **Endpoint**: `/rest/v1/productos?id=eq.{id_producto}`
+- **Headers Requeridos**: Mismos que POST.
+- **Parámetros Requeridos**:
+  - `id=eq.{id}` en la URL para indicar qué producto actualizar.
+- **Cuerpo (JSON)**: Se pueden enviar uno o varios campos a modificar, por ejemplo:
+  ```json
+  {
+    "precio": 99.99,
+    "stock": 15
+  }
+  ```
+
+## 5. Eliminar Producto (Delete)
+- **Método**: DELETE
+- **Endpoint**: `/rest/v1/productos?id=eq.{id_producto}`
+- **Headers Requeridos**: Mismos que listar.
+- **Parámetros Requeridos**:
+  - `id=eq.{id}` en la URL para especificar qué registro debe ser eliminado.
