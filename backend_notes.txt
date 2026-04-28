@@ -1,0 +1,11 @@
+# Notas del Backend: Estructura de la tabla "productos"
+
+La tabla `productos` es la entidad principal para gestionar el inventario en la base de datos de Supabase. A continuación se detalla información clave sobre su estructura:
+
+- **Identificador (id)**: Este campo actúa como la clave primaria (Primary Key) de la tabla. Aunque a nivel técnico de PostgreSQL está definido como un `UUID` que se autogenera mediante la función `gen_random_uuid()`, para propósitos de la lógica de negocio se comporta como un campo **autoincremental**; es decir, la base de datos se encarga de asignar un valor único de forma automática y transparente al crear un nuevo registro sin necesidad de que el frontend lo envíe.
+- **nombre**: Nombre visible del producto (VARCHAR).
+- **descripcion**: Detalles y características del producto (TEXT).
+- **precio**: Valor monetario del producto. No puede ser negativo.
+- **stock**: Cantidad de unidades disponibles. Su valor inicial por defecto es 0.
+- **activo**: Booleano que indica si el producto está disponible (true por defecto).
+- **Timestamps**: Los campos `creado_en` y `actualizado_en` registran automáticamente la fecha y hora de creación y última modificación.

@@ -21,3 +21,12 @@ COMMENT ON COLUMN public.productos.id IS 'Identificador único del producto.';
 COMMENT ON COLUMN public.productos.nombre IS 'Nombre visible del producto.';
 COMMENT ON COLUMN public.productos.precio IS 'Precio unitario del producto en la moneda local.';
 COMMENT ON COLUMN public.productos.stock IS 'Cantidad de unidades disponibles en el inventario.';
+
+-- Políticas de Seguridad a Nivel de Fila (RLS)
+ALTER TABLE public.productos ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Permitir inserciones a anon"
+ON public.productos
+FOR INSERT
+TO anon
+WITH CHECK (true);
