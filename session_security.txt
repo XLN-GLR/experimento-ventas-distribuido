@@ -1,0 +1,16 @@
+GUÍA DE SEGURIDAD: REVOCACIÓN DE SESIONES
+=========================================
+
+Al utilizar JWTs (JSON Web Tokens) gestionados por el proveedor de identidad, las sesiones son escalables (stateless), lo que significa que el backend no necesita almacenar una tabla activa de sesiones. Sin embargo, en escenarios críticos, es indispensable saber cómo invalidar el acceso de un usuario.
+
+Pasos para revocar una sesión activa directamente desde la nube:
+----------------------------------------------------------------
+1. Acceso al Dashboard: Ingresa a tu panel de control en Supabase (https://app.supabase.com) y selecciona tu proyecto.
+2. Navegación: En el menú lateral izquierdo, dirígete a la sección "Authentication" y haz clic en "Users".
+3. Identificación: Busca al usuario específico que deseas gestionar en la lista. Puedes guiarte por su correo electrónico o su UUID (auth.uid).
+4. Revocación: Haz clic en el botón de opciones (los tres puntos verticales situados a la derecha de la fila del usuario).
+5. Acción:
+   - Selecciona "Log out" (Cerrar sesión) para revocar su 'refresh token' inmediatamente. Cuando su JWT de corta duración (típicamente 1 hora) expire, no podrá renovarlo y perderá el acceso de escritura al backend.
+   - Alternativamente, puedes seleccionar "Delete user" o "Suspend user" si el compromiso de seguridad es severo.
+
+Al realizar estas acciones, las políticas de Seguridad a Nivel de Fila (RLS) en PostgreSQL rechazarán de inmediato cualquier nueva solicitud de modificación de registros al no recibir un token validado.

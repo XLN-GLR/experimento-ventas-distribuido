@@ -62,3 +62,14 @@ ON public.productos
 FOR DELETE
 TO authenticated
 USING (true);
+
+-- ==========================================
+-- NOTA TÉCNICA PARA EXPANSIONES FUTURAS
+-- ==========================================
+-- En caso de que el sistema escale y requiera que cada usuario gestione únicamente sus propios 
+-- productos (ej. un marketplace), se debe utilizar el objeto auth.uid() de Supabase.
+-- 
+-- Ejemplo de cómo se vería la restricción:
+-- USING (usuario_creador_id = auth.uid())
+-- 
+-- Actualmente usamos USING (true) dado que el esquema actual define un acceso único de administrador global.
