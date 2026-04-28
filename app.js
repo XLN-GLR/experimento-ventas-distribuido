@@ -4,6 +4,10 @@ const CONFIG = {
     SUPABASE_ANON_KEY: 'TU_SUPABASE_API_KEY_AQUI'
 };
 
+// Estado global de la aplicación
+let currentProducts = [];
+let editingProductId = null;
+
 // Inicializamos el cliente de Supabase usando el script global cargado vía CDN
 const supabase = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 
@@ -24,7 +28,8 @@ async function cargarProductos() {
             throw error;
         }
 
-        renderizarProductos(productos);
+        currentProducts = productos || [];
+        renderizarProductos(currentProducts);
     } catch (error) {
         console.error('Error al cargar los productos:', error.message);
         contenedor.innerHTML = `
@@ -72,9 +77,20 @@ function renderizarProductos(productos) {
                 <h3 class="producto-nombre">${producto.nombre || 'Producto sin nombre'}</h3>
                 <p class="producto-descripcion">${producto.descripcion || ''}</p>
                 <div class="producto-precio">${precioFormateado}</div>
-                <button class="btn-comprar">Añadir al Carrito</button>
+                <div class="producto-acciones">
+                    <button class="btn-editar" data-id="${producto.id}">Editar</button>
+                    <button class="btn-eliminar" data-id="${producto.id}">Eliminar</button>
+                </div>
             </div>
         `;
+
+        // Asignar eventos a los botones de esta tarjeta
+        const btnEditar = card.querySelector('.btn-editar');
+        const btnEliminar = card.querySelector('.btn-eliminar');
+        
+        btnEditar.addEventListener('click', () => prepare_edit_mode(producto.id));
+        btnEliminar.addEventListener('click', () => remove_inventory_item(producto.id));
+
         lista.appendChild(card);
     });
 
@@ -82,7 +98,55 @@ function renderizarProductos(productos) {
 }
 
 /**
- * Función asíncrona que inserta un producto en Supabase al enviar el formulario
+ * Función que prepara el formulario para edición
+ */
+function prepare_edit_mode(id) {
+    const producto = currentProducts.find(p => p.id === id);
+    if (!producto) return;
+
+    editingProductId = id;
+
+    // Llenar campos
+    document.getElementById('product_name_input').value = producto.nombre || '';
+    document.getElementById('product_price_input').value = producto.precio || '';
+    document.getElementById('product_stock_input').value = producto.stock || '';
+
+    // Actualizar UI del formulario
+    document.querySelector('.minimal-form h2').textContent = 'Editar Producto';
+    document.querySelector('.btn-submit').textContent = 'Actualizar Producto';
+
+    // Opcional: enfocar el primer input y subir
+    document.getElementById('product_name_input').focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
+ * Función asíncrona para eliminar un producto
+ */
+async function remove_inventory_item(id) {
+    const confirmacion = confirm("¿Estás seguro de que deseas eliminar este producto permanentemente?");
+    if (!confirmacion) return;
+
+    try {
+        const { error } = await supabase
+            .from('productos')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            throw error;
+        }
+
+        // Refrescar lista
+        await cargarProductos();
+    } catch (error) {
+        console.error('Error al eliminar:', error.message);
+        alert(`No se pudo eliminar: ${error.message}`);
+    }
+}
+
+/**
+ * Función asíncrona que inserta o actualiza un producto en Supabase al enviar el formulario
  */
 async function send_product_to_cloud(event) {
     event.preventDefault(); // Evita recargar la página
@@ -98,26 +162,41 @@ async function send_product_to_cloud(event) {
     btnSubmit.disabled = true;
 
     try {
-        const { error } = await supabase
-            .from('productos')
-            .insert([
-                { nombre, precio, stock }
-            ]);
+        let errorResult;
 
-        if (error) {
-            throw error;
+        if (editingProductId) {
+            // Update
+            const { error } = await supabase
+                .from('productos')
+                .update({ nombre, precio, stock })
+                .eq('id', editingProductId);
+            errorResult = error;
+        } else {
+            // Insert
+            const { error } = await supabase
+                .from('productos')
+                .insert([{ nombre, precio, stock }]);
+            errorResult = error;
+        }
+
+        if (errorResult) {
+            throw errorResult;
         }
 
         // Limpiamos el formulario tras éxito
         event.target.reset();
-
-        // Refrescamos la lista para ver el nuevo producto
+        editingProductId = null;
+        
+        // Restaurar UI
+        document.querySelector('.minimal-form h2').textContent = 'Añadir Nuevo Producto';
+        
+        // Refrescamos la lista para ver los cambios
         await cargarProductos();
     } catch (error) {
-        console.error('Error al insertar el producto:', error.message);
+        console.error('Error al guardar el producto:', error.message);
         alert(`Error al guardar: ${error.message}`);
     } finally {
-        btnSubmit.textContent = textoOriginal;
+        btnSubmit.textContent = editingProductId ? 'Actualizar Producto' : 'Guardar Producto';
         btnSubmit.disabled = false;
     }
 }
