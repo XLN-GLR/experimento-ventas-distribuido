@@ -6,8 +6,21 @@ if (!window.supabaseClient) {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL.includes('TU_SUPABASE_URL')) {
         console.error('⚠️ [Error Crítico]: Las credenciales de Supabase no están definidas o son las predeterminadas.');
     } else if (typeof window.supabase !== 'undefined') {
-        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log("Supabase inicializado correctamente");
+        let finalUrl = SUPABASE_URL;
+        let isSanitized = false;
+        
+        if (finalUrl.includes('/rest/v1')) {
+            finalUrl = finalUrl.replace('/rest/v1', '');
+            isSanitized = true;
+        }
+        
+        window.supabaseClient = window.supabase.createClient(finalUrl, SUPABASE_ANON_KEY);
+        
+        if (isSanitized) {
+            console.log("URL sanitizada y cliente inicializado");
+        } else {
+            console.log("Supabase inicializado correctamente");
+        }
     }
 }
 
