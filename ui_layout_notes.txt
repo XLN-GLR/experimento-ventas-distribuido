@@ -1,0 +1,2 @@
+Corrección de Alineación UI:
+Se aplicó una corrección de alineación mediante Flexbox para centrar correctamente la tarjeta de acceso en la pantalla.
