@@ -2,13 +2,16 @@
 const SUPABASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.SUPABASE_URL) || (window.ENV && window.ENV.SUPABASE_URL) || '';
 const SUPABASE_ANON_KEY = (typeof CONFIG !== 'undefined' && CONFIG.SUPABASE_ANON_KEY) || (window.ENV && window.ENV.SUPABASE_ANON_KEY) || '';
 
-let supabase = null;
-
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL.includes('TU_SUPABASE_URL')) {
-    console.error('⚠️ [Error Crítico]: Las credenciales de Supabase no están definidas o son las predeterminadas.');
-} else {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+if (!window.supabaseClient) {
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL.includes('TU_SUPABASE_URL')) {
+        console.error('⚠️ [Error Crítico]: Las credenciales de Supabase no están definidas o son las predeterminadas.');
+    } else if (typeof window.supabase !== 'undefined') {
+        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log("Supabase inicializado correctamente");
+    }
 }
+
+const supabaseClient = window.supabaseClient;
 
 // Estado global de la aplicación
 let currentProducts = [];
@@ -38,7 +41,7 @@ function showNotification(mensaje, tipo = 'error') {
  */
 async function handle_session_state() {
     try {
-        const { data: { user }, error } = await supabase.auth.getUser();
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
         
         const authPanel = document.getElementById('auth-panel');
         const appPanel = document.getElementById('app-panel');
@@ -76,7 +79,7 @@ async function iniciarSesion(event) {
     btnSubmit.disabled = true;
 
     try {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
         });
@@ -104,7 +107,7 @@ async function iniciarSesion(event) {
  */
 async function execute_user_logout() {
     try {
-        const { error } = await supabase.auth.signOut();
+        const { error } = await supabaseClient.auth.signOut();
         if (error) throw error;
         
         currentProducts = [];
@@ -125,7 +128,7 @@ async function cargarProductos() {
     const contenedor = document.getElementById('productos-contenedor');
     
     try {
-        const { data: productos, error } = await supabase
+        const { data: productos, error } = await supabaseClient
             .from('productos')
             .select('*');
 
@@ -210,7 +213,7 @@ async function remove_inventory_item(id) {
     if (!confirmacion) return;
 
     try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('productos')
             .delete()
             .eq('id', id);
@@ -241,13 +244,13 @@ async function send_product_to_cloud(event) {
         let errorResult;
 
         if (editingProductId) {
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('productos')
                 .update({ nombre, precio, stock })
                 .eq('id', editingProductId);
             errorResult = error;
         } else {
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('productos')
                 .insert([{ nombre, precio, stock }]);
             errorResult = error;
@@ -273,7 +276,7 @@ async function send_product_to_cloud(event) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (!supabase) {
+    if (!supabaseClient) {
         document.body.innerHTML = `
             <div class="container">
                 <div class="error" style="margin-top: 3rem; text-align: center;">
@@ -286,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     handle_session_state();
     
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
             handle_session_state();
         }
