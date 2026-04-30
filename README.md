@@ -51,6 +51,11 @@ Para el contexto de este proyecto de grado, la seguridad de los datos y la integ
 
 Actualmente, **todas las operaciones de escritura (creación, actualización y eliminación de registros)** están restringidas exclusivamente a usuarios que hayan iniciado sesión y cuenten con el rol `authenticated`. Esto previene cualquier manipulación pública o no autorizada del inventario y garantiza la fiabilidad del sistema en un entorno real. De esta forma, el backend está completamente blindado y solo responde a peticiones de usuarios registrados y confirmados. Además, el sistema ahora implementa un flujo de validación bidireccional entre la interfaz de usuario y el motor de identidad empresarial. Se confirma de manera oficial que el flujo de acceso ya es funcional y está operativo para los usuarios autorizados dentro del marco de este experimento técnico.
 
+## Buenas Prácticas de Importación
+
+Para mantener un rendimiento óptimo y evitar errores de sintaxis en el frontend (como `SyntaxError: Identifier 'supabase' has already been declared`), es fundamental no duplicar la carga de scripts.
+Se recomienda centralizar la declaración e inicialización de clientes externos (por ejemplo, Supabase) en un único archivo principal. Los demás componentes deben reutilizar esta instancia centralizada. Esto previene conflictos de nombres en el ámbito global y optimiza significativamente la carga de recursos en el navegador.
+
 ## Solución de Problemas Comunes (Troubleshooting)
 
 ### Conexión a Supabase

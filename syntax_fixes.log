@@ -1,0 +1,9 @@
+# Registro de Errores de Sintaxis
+
+## SyntaxError: Identifier 'supabase' has already been declared
+
+**Descripción del Error:**
+Este error ocurre cuando se intenta declarar la misma variable `supabase` utilizando `let` o `const` más de una vez en el mismo ámbito (scope). Es un problema común cuando se incluyen múltiples scripts en el frontend que intentan inicializar el cliente de Supabase de manera independiente.
+
+**Solución Implementada:**
+La solución consistió en centralizar la declaración del cliente de Supabase en un solo punto del flujo de la aplicación. En lugar de inicializar el cliente en cada archivo, se configuró un único punto de inicialización que provee la instancia del cliente para el resto de los scripts. Esto elimina el conflicto de nombres y optimiza la carga de los scripts en el navegador.
