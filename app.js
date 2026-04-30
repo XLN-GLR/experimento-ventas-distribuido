@@ -62,7 +62,7 @@ async function handle_session_state() {
         if (user) {
             authPanel.style.display = 'none';
             appPanel.style.display = 'block';
-            fetch_inventory_data();
+            cargar_inventario_total();
         } else {
             authPanel.style.display = 'block';
             appPanel.style.display = 'none';
@@ -138,7 +138,7 @@ async function execute_user_logout() {
 /**
  * Función asíncrona para hacer un SELECT a la tabla "productos"
  */
-async function fetch_inventory_data() {
+async function cargar_inventario_total() {
     const contenedor = document.getElementById('productos-contenedor');
     
     try {
@@ -234,7 +234,7 @@ async function remove_inventory_item(id) {
 
         if (error) throw error;
 
-        await fetch_inventory_data();
+        await cargar_inventario_total();
         showNotification('Producto eliminado exitosamente.', 'success');
     } catch (error) {
         console.error('Error al eliminar:', error.message);
@@ -278,7 +278,7 @@ async function send_product_to_cloud(event) {
         editingProductId = null;
         document.querySelector('#add-product-form h2').textContent = 'Añadir Nuevo Producto';
         
-        await fetch_inventory_data();
+        await cargar_inventario_total();
         showNotification(mensajeExito, 'success');
     } catch (error) {
         console.error('Error al guardar el producto:', error.message);

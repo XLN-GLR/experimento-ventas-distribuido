@@ -1,0 +1,8 @@
+# Mapa de Datos del Producto (Data Map)
+
+Cada producto recibido desde el backend debe contener la siguiente estructura base para asegurar una correcta visualización en el frontend:
+
+- id
+- nombre
+- precio
+- stock

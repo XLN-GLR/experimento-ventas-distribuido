@@ -14,7 +14,7 @@ Este repositorio contiene la configuración y esquemas iniciales para el módulo
 
 El objetivo de este módulo es proporcionar una capa de datos centralizada, segura y de fácil acceso. Al utilizar una solución Backend-as-a-Service (BaaS), delegamos la infraestructura y obtenemos APIs inmediatas y seguras para interactuar con la información. Además, el backend ya soporta de forma nativa operaciones de escritura asíncronas desde el frontend, permitiendo una experiencia de usuario más fluida. El sistema ahora soporta la gestión completa de registros (creación, lectura, actualización y eliminación), permitiendo mantener un inventario actualizado y libre de errores.
 
-**Nota:** El módulo de visualización ya está vinculado a sesiones protegidas.
+**Nota:** El módulo de visualización ya está vinculado a sesiones protegidas. Además, el backend ya está configurado para entregar datos a clientes autenticados de forma segura.
 
 ## Endpoints Automáticos (PostgREST)
 

@@ -34,11 +34,12 @@ COMMENT ON COLUMN public.productos.stock IS 'Cantidad de unidades disponibles en
 ALTER TABLE public.productos ENABLE ROW LEVEL SECURITY;
 
 -- 1. Política de Lectura (SELECT)
--- Permite que cualquier usuario (incluso no autenticado) pueda ver el catálogo de productos.
-CREATE POLICY "Permitir lectura pública"
+-- NOTA: Esta es la sentencia de la política de lectura (SELECT) que habilitamos en la nube.
+-- Permite que únicamente los usuarios autenticados puedan ver el catálogo de productos.
+CREATE POLICY "Permitir lectura a autenticados"
 ON public.productos
 FOR SELECT
-TO anon, authenticated
+TO authenticated
 USING (true);
 
 -- 2. Política de Creación (INSERT)
