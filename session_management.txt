@@ -1,0 +1,6 @@
+# Gestión de Sesiones (Session Management)
+
+El sistema utiliza **Local Storage** para mantener la sesión activa entre cierres de navegador. Esto asegura la persistencia de la interfaz y evita que los usuarios tengan que volver a autenticarse cada vez que refrescan la página o vuelven a abrir la aplicación.
+
+## Nota Técnica
+El botón de "Cerrar Sesión" (Logout) es el único método disponible para invalidar el token JWT localmente. Al pulsarlo, el sistema limpia los datos de autenticación almacenados en el Local Storage de forma segura, cerrando la sesión de manera efectiva.
