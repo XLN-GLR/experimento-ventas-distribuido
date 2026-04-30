@@ -1,2 +1,5 @@
 Corrección de Alineación UI:
 Se aplicó una corrección de alineación mediante Flexbox para centrar correctamente la tarjeta de acceso en la pantalla.
+
+Corrección de Parpadeo de Inicio de Sesión:
+Se documentó y solucionó el problema del "parpadeo de inicio de sesión" (login flicker). La solución consistió en implementar un estado de carga inicial (loading state) que bloquea el renderizado de la interfaz hasta que el SDK de la nube confirma la validez del token local.
