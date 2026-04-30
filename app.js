@@ -62,7 +62,7 @@ async function handle_session_state() {
         if (user) {
             authPanel.style.display = 'none';
             appPanel.style.display = 'block';
-            cargar_inventario_total();
+            cargar_productos();
         } else {
             authPanel.style.display = 'block';
             appPanel.style.display = 'none';
@@ -124,11 +124,8 @@ async function execute_user_logout() {
         const { error } = await supabaseClient.auth.signOut();
         if (error) throw error;
         
-        currentProducts = [];
-        editingProductId = null;
-        document.getElementById('productos-contenedor').innerHTML = '<div class="cargando">Cargando productos...</div>';
-        
-        await handle_session_state();
+        localStorage.clear();
+        window.location.reload();
     } catch (error) {
         console.error('Error al cerrar sesión:', error.message);
         showNotification('Ocurrió un error al intentar cerrar la sesión. La base de datos no responde.', 'error');
@@ -138,7 +135,7 @@ async function execute_user_logout() {
 /**
  * Función asíncrona para hacer un SELECT a la tabla "productos"
  */
-async function cargar_inventario_total() {
+async function cargar_productos() {
     const contenedor = document.getElementById('productos-contenedor');
     
     try {
@@ -234,7 +231,7 @@ async function remove_inventory_item(id) {
 
         if (error) throw error;
 
-        await cargar_inventario_total();
+        await cargar_productos();
         showNotification('Producto eliminado exitosamente.', 'success');
     } catch (error) {
         console.error('Error al eliminar:', error.message);
@@ -278,7 +275,7 @@ async function send_product_to_cloud(event) {
         editingProductId = null;
         document.querySelector('#add-product-form h2').textContent = 'Añadir Nuevo Producto';
         
-        await cargar_inventario_total();
+        await cargar_productos();
         showNotification(mensajeExito, 'success');
     } catch (error) {
         console.error('Error al guardar el producto:', error.message);
