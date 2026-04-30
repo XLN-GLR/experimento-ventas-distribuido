@@ -1,0 +1,10 @@
+# Estructura del Inventario (Frontend)
+
+El frontend debe estar preparado para recibir y procesar los siguientes campos provenientes de la tabla de productos:
+
+- **nombre**: Nombre del producto a mostrar en la tarjeta.
+- **precio**: Precio unitario del producto.
+- **stock**: Cantidad de unidades disponibles en inventario.
+- **imagen**: URL de la imagen representativa del producto.
+
+Asegurarse de que el mapeo en el código del cliente utilice exactamente estos nombres para evitar inconsistencias visuales.
