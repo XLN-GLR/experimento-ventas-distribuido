@@ -65,10 +65,11 @@ async function handle_session_state() {
  */
 async function iniciarSesion(event) {
     event.preventDefault();
+    console.log("Intentando iniciar sesión...");
     
     const email = document.getElementById('user-email').value;
     const password = document.getElementById('user-password').value;
-    const btnSubmit = event.target.querySelector('.btn-submit');
+    const btnSubmit = document.getElementById('btn-login');
     const textoOriginal = btnSubmit.textContent;
     
     btnSubmit.textContent = 'Iniciando sesión...';
