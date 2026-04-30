@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     handle_session_state();
     
     supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
             handle_session_state();
         }
     });
