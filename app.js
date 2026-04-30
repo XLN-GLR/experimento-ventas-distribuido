@@ -58,21 +58,27 @@ async function handle_session_state() {
         
         const authPanel = document.getElementById('auth-panel');
         const appPanel = document.getElementById('app-panel');
+        const globalLoader = document.getElementById('global-loader');
+
+        if (globalLoader) globalLoader.classList.add('hidden');
 
         if (user) {
-            authPanel.style.display = 'none';
-            appPanel.style.display = 'block';
+            authPanel.classList.add('hidden');
+            appPanel.classList.remove('hidden');
             cargar_productos();
         } else {
-            authPanel.style.display = 'block';
-            appPanel.style.display = 'none';
+            authPanel.classList.remove('hidden');
+            appPanel.classList.add('hidden');
         }
     } catch (error) {
         console.error('Error verificando sesión:', error.message);
         const authPanel = document.getElementById('auth-panel');
         const appPanel = document.getElementById('app-panel');
-        authPanel.style.display = 'block';
-        appPanel.style.display = 'none';
+        const globalLoader = document.getElementById('global-loader');
+        
+        if (globalLoader) globalLoader.classList.add('hidden');
+        if (authPanel) authPanel.classList.remove('hidden');
+        if (appPanel) appPanel.classList.add('hidden');
     }
 }
 
@@ -102,9 +108,9 @@ async function iniciarSesion(event) {
         
         event.target.reset();
         
-        // Manipulación explícita de estilos en línea tras éxito de inicio de sesión
-        document.getElementById('auth-panel').style.display = 'none';
-        document.getElementById('app-panel').style.display = 'block';
+        // Manipulación explícita de estilos mediante clases tras éxito de inicio de sesión
+        document.getElementById('auth-panel').classList.add('hidden');
+        document.getElementById('app-panel').classList.remove('hidden');
         
         await handle_session_state();
     } catch (error) {
@@ -239,7 +245,7 @@ async function remove_inventory_item(id) {
     }
 }
 
-async function send_product_to_cloud(event) {
+async function guardar_producto(event) {
     event.preventDefault(); 
 
     const nombre = document.getElementById('product-name').value;
@@ -307,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     const formProducto = document.getElementById('add-product-form');
-    if (formProducto) formProducto.addEventListener('submit', send_product_to_cloud);
+    if (formProducto) formProducto.addEventListener('submit', guardar_producto);
     
     const formLogin = document.getElementById('login-form');
     if (formLogin) formLogin.addEventListener('submit', iniciarSesion);
