@@ -92,6 +92,7 @@ async function iniciarSesion(event) {
     btnSubmit.disabled = true;
 
     try {
+        console.log("Valores capturados - Email:", email, "Password:", password);
         const { error } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
